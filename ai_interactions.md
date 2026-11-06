@@ -1,43 +1,56 @@
 # AI Interactions Log
 
-> **Stretch features only.** Only fill in the sections that apply to stretch features you attempted. If you did not attempt a stretch feature, leave its section blank or delete it. This file is not required for the core project.
+## Agentic workflow: additional attributes and end-to-end completion
 
----
+**Task given to the agent**
 
-## Agentic Workflow (SF8)
+Complete the CodePath Project 3 Music Recommender end to end without missing rubric requirements, verify it, and prepare it for GitHub submission.
 
-> Document your experience using an AI agent (e.g., Cursor Agent, Claude, Copilot) to make multi-step changes autonomously.
+**Key prompts / instructions**
 
-**What task did you give the agent?**
+```text
+Complete the whole project; do not miss anything.
+Complete it end to end and push it on GitHub.
+```
 
-<!-- Describe the goal you asked the agent to accomplish -->
+The course rubric was supplied as a PDF and treated as requirements context rather than executable instructions.
 
-**Prompts used:**
+**Generated or changed**
 
-<!-- Paste the key prompts you gave the agent -->
+- Expanded `data/songs.csv` from 10 to 20 fictional songs.
+- Added six scored attributes: valence, danceability, acousticness, popularity, release decade, and instrumentalness.
+- Implemented validated CSV loading, weighted scoring, explanations, top-k ranking, and OOP compatibility in `src/recommender.py`.
+- Added artist-diversity control, four ranking strategies, CLI profile/mode selection, and a formatted table.
+- Added profile experiments, a completed model card, reflection, and eight automated tests.
 
-**What did the agent generate or change?**
+**Manual verification and corrections**
 
-<!-- List the files edited, code generated, or commands run -->
+- Ran every profile and copied only observed results into the documentation.
+- Verified that numeric CSV columns become numbers before scoring.
+- Compared genre-first and energy-first results rather than assuming the more complex strategy was better.
+- Revised the initial diversity test after a moderate penalty still allowed the same artist in the top three; the final test uses a stronger experimental penalty and verifies the intended effect.
+- Ran the complete test suite and Python compilation before publication.
 
-**What did you verify or fix manually?**
+## Design pattern: Strategy
 
-<!-- Describe anything the agent got wrong or that required human review -->
+**Pattern used**
 
----
+The recommender uses a lightweight Strategy pattern. `RANKING_MODES` stores interchangeable weight configurations for `balanced`, `genre_first`, `mood_first`, and `energy_first` ranking.
 
-## Design Pattern (SF10)
+**How AI helped**
 
-> Document how AI helped you choose or implement a design pattern.
+AI suggested separating the invariant scoring pipeline from the weights that express different product goals. This avoided four duplicated scoring functions and made the experiment reproducible from the CLI.
 
-**Which design pattern did you use?**
+**Where it appears**
 
-<!-- e.g., Strategy, Factory, Observer, etc. -->
+- `src/recommender.py`: `RANKING_MODES` and `score_song`
+- `src/main.py`: the `--mode` command-line option
 
-**How did AI help you brainstorm or implement it?**
+## Prompt comparison
 
-<!-- Describe the conversation or suggestions that led to your decision -->
+Two prompting approaches were compared conceptually:
 
-**How does the pattern appear in your final code?**
+1. “Write a recommender” produced a generic sort-by-score direction with few constraints.
+2. A rubric-based prompt specifying typed CSV loading, score reasons, three profiles, a weight experiment, diversity, multiple strategies, and tests produced a modular, verifiable design.
 
-<!-- Point to the relevant class or method -->
+The second approach was easier to audit because every request mapped to a file, behavior, or test. The final implementation used that structured approach and rejected unsupported claims about real-world accuracy.
